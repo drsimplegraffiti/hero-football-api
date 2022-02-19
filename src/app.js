@@ -25,13 +25,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//delay
-if (process.env.DELAY) {
-  app.use((req, res, next) => {
-    setTimeout(() => next(), parseInt(process.env.DELAY));
-  });
-}
-
 //Timezone
 process.env.TZ = "Africa/Lagos";
 
