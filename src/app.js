@@ -37,7 +37,7 @@ process.env.TZ = "Africa/Lagos";
 
 //routes
 app.get("/", (req, res) => {
-  return res.status(200).json({ msg: "home page" });
+  return res.status(200).json({ msg: "hero ---> home page" });
 });
 app.use("/api/user", userRouter);
 app.use("/", matchRouter);
