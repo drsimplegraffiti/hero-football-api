@@ -24,7 +24,7 @@ router.route("/login").post(Login);
 router.get("/auth/dashboard", isAuth, Dashboard);
 
 // @desc    Verify email
-// @route   POST  /api/auth/verify-email
+// @route   POST  /api/user/auth/verify-email
 // @access  Private
 router.get("/auth/verify-email", verifyMail);
 
