@@ -8,6 +8,7 @@ const sendEmail = require("../utils/emailSender");
 
 const { User } = require("../models/user_model");
 const { Otp } = require("../models/otp_model");
+const URL = "https://hero.com";
 
 // @desc SIGNUP
 module.exports.signUp = async (req, res) => {
@@ -46,9 +47,7 @@ module.exports.signUp = async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: "User registration ",
-      message: `<a href="${URL}/auth/email/verify/?token=${user.emailToken}" style="color: #390535; text-decoration: underline"
-      >${URL}/auth/email/verify/?token=${user.emailToken}</a
-    >`,
+      message: `${URL}/auth/email/verify/?token=${user.emailToken}`,
     });
     console.log(user.email);
     const dataInfo = {
