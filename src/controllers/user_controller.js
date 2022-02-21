@@ -8,7 +8,7 @@ const sendEmail = require("../utils/emailSender");
 
 const { User } = require("../models/user_model");
 const { Otp } = require("../models/otp_model");
-const URL = "https://hero.com";
+const URL = "localhost:4545";
 
 // @desc SIGNUP
 module.exports.signUp = async (req, res) => {
