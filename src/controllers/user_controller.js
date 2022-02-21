@@ -8,7 +8,10 @@ const sendEmail = require("../utils/emailSender");
 
 const { User } = require("../models/user_model");
 const { Otp } = require("../models/otp_model");
-const URL = "localhost:4545";
+
+const URL = process.env.NODE_ENV
+  ? "localhost:4545"
+  : "https://hero-predict.herokuapp.com/";
 
 // @desc SIGNUP
 module.exports.signUp = async (req, res) => {
