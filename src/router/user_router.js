@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const {
   signUp,
-  verifyOtp,
   Login,
   Dashboard,
+  verifyMail,
 } = require("../controllers/user_controller");
 const { isAuth } = require("../middleware/auth");
 
@@ -11,11 +11,6 @@ const { isAuth } = require("../middleware/auth");
 // @route   POST  /api/user/signup
 // @access  Public
 router.route("/signup").post(signUp);
-
-// @desc    Verify Otp
-// @route   POST  /api/user/signup/verify
-// @access  Private
-router.route("/signup/verify").post(verifyOtp);
 
 // @desc    Login
 // @route   POST  /api/user/login
@@ -27,5 +22,10 @@ router.route("/login").post(Login);
 // @access  Private
 
 router.get("/auth/dashboard", isAuth, Dashboard);
+
+// @desc    Verify email
+// @route   POST  /api/auth/verify-email
+// @access  Private
+router.get("/auth/verify-email", verifyMail);
 
 module.exports = router;

@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const axios = require("axios");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const otpGenerator = require("otp-generator");
 const { successResMsg, errorResMsg } = require("../utils/response");
 const sendEmail = require("../utils/emailSender");
 
@@ -19,6 +19,7 @@ module.exports.signUp = async (req, res) => {
       ageRange,
       location,
       fullName,
+      emailToken,
       isVerified,
     } = req.body;
 
@@ -27,17 +28,7 @@ module.exports.signUp = async (req, res) => {
       email: email,
     });
     if (existingUser) return errorResMsg(res, 400, "User already registered");
-    const OTP = otpGenerator.generate(6, {
-      digits: true,
-      alphabets: false,
-      upperCase: false,
-      specialChars: false,
-    });
-    console.log(OTP);
 
-    const otp = new Otp({ number: number, otp: OTP });
-    const salt = await bcrypt.genSalt(10);
-    otp.otp = await bcrypt.hash(otp.otp, salt);
     const saltPassword = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, saltPassword);
 
@@ -45,63 +36,28 @@ module.exports.signUp = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      emailToken: crypto.randomBytes(64).toString("hex"),
       location,
       ageRange,
       number,
       isVerified,
     });
     const createdUser = await user.save();
-    const result = await otp.save();
     await sendEmail({
       email: user.email,
       subject: "User registration ",
-      message: `<p>You just registered please verify with  your otp...</p>
-      <h1>Your Otp Number: ${OTP}</h1>`,
+      message: `<a href="${URL}/auth/email/verify/?token=${user.emailToken}" style="color: #390535; text-decoration: underline"
+      >${URL}/auth/email/verify/?token=${user.emailToken}</a
+    >`,
     });
     console.log(user.email);
     const dataInfo = {
-      message: "Otp sent Successfully",
-      result,
-      // createdUser,
+      message: "Verification link sent Successfully",
     };
     return successResMsg(res, 200, dataInfo);
   } catch (error) {
     console.log(error);
     errorResMsg(res, 500, `Server Error ${error}`);
-  }
-};
-
-// @desc VERIFY OTP
-module.exports.verifyOtp = async (req, res) => {
-  try {
-    const otpHolder = await Otp.find({
-      number: req.body.number,
-    });
-    if (otpHolder.length === 0) {
-      return errorResMsg(res, 400, "You used an expired Otp");
-    }
-    const rightOtpFind = otpHolder[otpHolder.length - 1];
-    const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
-    if (rightOtpFind.number === req.body.number && validUser) {
-      const user = await User.findOne({ number: req.body.number });
-      const token = user.generateJWT();
-      user.isVerified = true;
-      await user.save();
-      const OTPDelete = await Otp.deleteMany({
-        number: rightOtpFind.number,
-      });
-      const dataInfo = {
-        message: "User Registration Completed and Successful",
-        token: token,
-      };
-
-      return successResMsg(res, 200, dataInfo);
-    } else {
-      return errorResMsg(res, 400, "Otp was wrong");
-    }
-  } catch (error) {
-    console.log(error);
-    errorResMsg(res, 500, `Server error:=== ${error}`);
   }
 };
 
@@ -169,5 +125,35 @@ module.exports.Dashboard = async (req, res) => {
   } catch (error) {
     console.log(error);
     errorResMsg(res, 500, `Server error ${error}`);
+  }
+};
+
+module.exports.verifyMail = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const user = await User.findOne({ emailToken: token });
+
+    if (!user) {
+      return res.status(400).json({
+        status: "error",
+        message: " User does not exist",
+      });
+    }
+
+    user.emailToken = null;
+    user.isVerified = true;
+    await user.save();
+
+    return res.status(200).json({
+      status: "success",
+      message:
+        "Success: Your email has been verified, please login to continue",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: error,
+      message: "Something Went Wrong",
+    });
   }
 };

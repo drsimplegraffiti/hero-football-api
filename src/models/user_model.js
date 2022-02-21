@@ -27,30 +27,18 @@ const userSchema = new Schema(
     },
     location: {
       type: String,
-      // required: [true, "Please enter your valid address..."],
     },
     ageRange: {
       type: String,
-      // required: [true, "Please enter your age..."],
+    },
+    emailToken: {
+      type: String,
     },
     number: {
       type: String,
-      // required: [true, "Please enter your phone number..."],
     },
   },
   { timestamps: true }
 );
-
-userSchema.methods.generateJWT = function () {
-  const token = jwt.sign(
-    {
-      _id: this._id,
-      number: this.number,
-    },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "7d" }
-  );
-  return token;
-};
 
 module.exports.User = mongoose.model("User", userSchema);
