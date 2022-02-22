@@ -9,11 +9,11 @@ const sendEmail = require("../utils/emailSender");
 const { User } = require("../models/user_model");
 const { Otp } = require("../models/otp_model");
 
-const URL = process.env.NODE_ENV
-  ? "localhost:4545"
-  : "https://hero-predict.herokuapp.com/";
+const URL = "https://hero-clan-cans.vercel.app";
 
-// @desc SIGNUP
+// @desc      SIGNUP
+// @route     POST /api/user/signup
+// @access    PUBLIC
 module.exports.signUp = async (req, res) => {
   try {
     const {
@@ -50,7 +50,7 @@ module.exports.signUp = async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: "User registration ",
-      message: `${URL}/auth/email/verify/?token=${user.emailToken}`,
+      message: `${URL}/auth/email/verify/token=${user.emailToken}`,
     });
     console.log(user.email);
     const dataInfo = {
@@ -63,7 +63,9 @@ module.exports.signUp = async (req, res) => {
   }
 };
 
-// @LOGIN
+// @desc      LOGIN
+// @route     POST /api/user/login
+// @access    PUBLIC
 module.exports.Login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -130,6 +132,9 @@ module.exports.Dashboard = async (req, res) => {
   }
 };
 
+// @desc      VERIFY MAIL
+// @route     POST /api/user/auth/verify-email
+// @access    PUBLIC
 module.exports.verifyMail = async (req, res) => {
   try {
     const token = req.query.token;

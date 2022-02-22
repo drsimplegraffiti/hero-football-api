@@ -10,7 +10,6 @@ const router = new Router();
 // Create prediction
 router.post("/", isAuth, async (req, res) => {
   try {
-    // const user = await User.find({});
     const id = req.user.id;
     console.log(id);
     //check user
