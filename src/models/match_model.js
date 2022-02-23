@@ -36,20 +36,29 @@ const matchSchema = new mongoose.Schema(
     goalsAwayTeam: {
       type: Number,
     },
-    eventTimeStamp: {
-      type: Date,
-    },
     leagueId: {
-      type: Number,
+      type: String,
     },
     round: {
       type: String,
     },
     country_id: {
-      type: Number,
+      type: String,
     },
     isLiveStatus: {
-      type: Boolean,
+      type: String,
+    },
+    matchDate: {
+      type: String,
+    },
+    team_home_badge: {
+      type: String,
+    },
+    team_away_badge: {
+      type: String,
+    },
+    league_logo: {
+      type: String,
     },
   },
   { timestamps: true }

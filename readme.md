@@ -44,3 +44,9 @@ id: 37,
 - API_KEY=[The API Key from https://www.api-football.com/](https://www.api-football.com/)
 
 1xbet_key=8e5d9d2beb4c47a7b799ddf3077af7e98d86f429856b4c47ad1909f3f0d403ea
+
+live Score = ==>
+Country ID = 108
+competition_id=78
+
+sportmonktoken=3mzdscZwroTW6w8W43xpOpqnzCBdwKdpTHhrIKiXFYpYBDS3lNyGhpkE1Fho
