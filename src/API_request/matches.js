@@ -3,8 +3,8 @@ var axios = require("axios").default;
 const mongoose = require("mongoose");
 
 const baseUrl =
-  // "https://apiv3.apifootball.com/?action=get_countries&APIkey=ed2a9573227f81ca3da6755c16c77e093e37d5dc671ec360aef0e2a92734312b"; // country
-  // "https://apiv3.apifootball.com/?action=get_leagues&country_id=85&APIkey=ed2a9573227f81ca3da6755c16c77e093e37d5dc671ec360aef0e2a92734312b"; // country id =85, league_id = 248;
+  // "https://apiv3.apifootball.com/?action=get_countries&APIkey="; // country
+  // "https://apiv3.apifootball.com/?action=get_leagues&country_id=85&APIkey="; // country id =85, league_id = 248;
   `https://apiv3.apifootball.com/?action=get_events&from=2022-02-23&to=2022-03-30&league_id=248&APIkey=${process.env.APIkey}`;
 var options = {
   method: "GET",
