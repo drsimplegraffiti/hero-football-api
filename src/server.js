@@ -3,6 +3,7 @@ const app = require("./app");
 const connectDB = require("./DB/db");
 
 connectDB();
+// db();
 
 const port = process.env.PORT || 3001;
 

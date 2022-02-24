@@ -1,20 +1,17 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports = {
-  development: {
-    url: process.env.DATABASE_URL,
-    dialect: "postgres",
-    operatorsAliases: "0",
-  },
-  test: {
-    username: "root",
-    password: null,
-    database: "database_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
-  },
-  production: {
-    use_env_variable: "DATABASE_URL",
-    dialect: "postgres",
+  HOST: "localhost",
+  USER: "root",
+  PASSWORD: "Bassguitar1#",
+  DB: "test_db",
+  dialect: "mysql",
+
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
   },
 };

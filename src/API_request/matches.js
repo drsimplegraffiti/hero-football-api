@@ -40,10 +40,24 @@ const getMatches = async () => {
         league_logo: fixture.league_logo,
       };
     });
-  const savedFixtures = Match.create(fixtures, {
-    updateOnDuplicate: ["id"],
-  });
   // console.log(fixtures);
+  try {
+    // const savedFixtures = await Match.create(fixtures);
+    for (const fixture of fixtures) {
+      const checkMatch = await Match.findOne({ matchId: fixture.matchId });
+      if (checkMatch) {
+        await Match.findOneAndUpdate({ matchId: checkMatch.matchId }, fixture);
+        continue;
+      }
+      const newMatch = await new Match(fixture).save();
+    }
+  } catch (error) {
+    // if (error.message.includes("duplicate key error")) {
+    // console.log("tttttttttttt", error.message.split("{")[1]);
+    console.log(error);
+    // }
+  }
+  // const savedFixtures = await Match.create(fixtures);
 };
 
 exports.getMatches = getMatches;

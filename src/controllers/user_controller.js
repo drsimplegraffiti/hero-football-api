@@ -6,8 +6,8 @@ const jwt = require("jsonwebtoken");
 const { successResMsg, errorResMsg } = require("../utils/response");
 const sendEmail = require("../utils/emailSender");
 
-const { User } = require("../models/user_model");
-const { Otp } = require("../models/otp_model");
+const User = require("../models/user_model").user;
+// const { Otp } = require("../models/otp_model");
 
 const URL = "https://hero-clan-cans.vercel.app";
 
