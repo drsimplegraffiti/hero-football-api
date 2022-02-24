@@ -17,15 +17,25 @@ router.post("/", isAuth, async (req, res) => {
       return errorResMsg(res, 401, "Unauthorized access");
     }
 
-    const { predGoalsHomeTeam, predGoalsAwayTeam, userId, scoreId, matchId } =
-      req.body;
+    const { predGoalsHomeTeam, predGoalsAwayTeam, scoreId, matchId } = req.body;
     if (
-      predGoalsHomeTeam === "" ||
+      matchId === "" ||
+      !matchId ||
+      !predGoalsHomeTeam ||
+      !predGoalsAwayTeam ||
       predGoalsAwayTeam === "" ||
-      matchId === ""
+      predGoalsAwayTeam === ""
     ) {
       return errorResMsg(res, 400, "Please provide everything");
     }
+    const verifyMatchId = await Match.findOne({ matchId });
+    if (!verifyMatchId) {
+      return errorResMsg(res, 404, "Invalid match ID provided");
+    }
+
+    // if (verifyMatchId.matchDate < new Date()) {
+    //   return errorResMsg(res, 409, "Match started already....");
+    // }
     const newPrediction = await Prediction.create({
       predGoalsHomeTeam,
       predGoalsAwayTeam,

@@ -2,10 +2,14 @@ const Match = require("../models/match_model");
 var axios = require("axios").default;
 const mongoose = require("mongoose");
 
+const startDate = `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`;
+const d = new Date(new Date().setDate(new Date().getDate() + 30));
+const endDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
 const baseUrl =
   // "https://apiv3.apifootball.com/?action=get_countries&APIkey="; // country
   // "https://apiv3.apifootball.com/?action=get_leagues&country_id=85&APIkey="; // country id =85, league_id = 248;
-  `https://apiv3.apifootball.com/?action=get_events&from=2022-02-23&to=2022-03-30&league_id=248&APIkey=${process.env.APIkey}`;
+  `https://apiv3.apifootball.com/?action=get_events&from=${startDate}&to=${endDate}&league_id=248&APIkey=${process.env.APIkey}`;
 var options = {
   method: "GET",
   url: baseUrl,
@@ -30,7 +34,7 @@ const getMatches = async () => {
         awayTeamId: fixture.match_awayteam_id,
         awayTeamName: fixture.match_awayteam_name,
         goalsAwayTeam: fixture.match_awayteam_score,
-        matchDate: fixture.match_date,
+        matchDate: `${fixture.match_date}T${fixture.match_time}Z`, // ensure UTC format
         country: fixture.country_name,
         isLiveStatus: fixture.match_live,
         leagueId: fixture.league_id,
@@ -40,7 +44,6 @@ const getMatches = async () => {
         league_logo: fixture.league_logo,
       };
     });
-  // console.log(fixtures);
   try {
     // const savedFixtures = await Match.create(fixtures);
     for (const fixture of fixtures) {

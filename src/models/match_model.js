@@ -49,7 +49,7 @@ const matchSchema = new mongoose.Schema({
     type: String,
   },
   matchDate: {
-    type: String,
+    type: Date,
   },
   team_home_badge: {
     type: String,
