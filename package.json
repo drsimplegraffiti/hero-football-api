@@ -29,7 +29,8 @@
     "sequelize": "^6.16.3",
     "sequelize-cli": "^6.4.1",
     "socket.io": "^4.4.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "weeknumber": "^1.2.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

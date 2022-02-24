@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const { successResMsg, errorResMsg } = require("../utils/response");
 const sendEmail = require("../utils/emailSender");
 
-const User = require("../models/user_model").user;
+const { User } = require("../models/user_model");
 // const { Otp } = require("../models/otp_model");
 
 const URL = "https://hero-clan-cans.vercel.app";
@@ -28,7 +28,6 @@ module.exports.signUp = async (req, res) => {
     } = req.body;
 
     const existingUser = await User.findOne({
-      number: number,
       email: email,
     });
     if (existingUser) return errorResMsg(res, 400, "User already registered");

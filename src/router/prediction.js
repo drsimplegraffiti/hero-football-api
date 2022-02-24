@@ -4,6 +4,7 @@ const Match = require("../models/match_model");
 const User = require("../models/user_model");
 const { errorResMsg, successResMsg } = require("../utils/response");
 const { isAuth } = require("../middleware/auth");
+const { weekNumber } = require("weeknumber");
 
 const router = new Router();
 
@@ -18,17 +19,11 @@ router.post("/", isAuth, async (req, res) => {
     }
 
     const { predGoalsHomeTeam, predGoalsAwayTeam, scoreId, matchId } = req.body;
-    if (
-      matchId === "" ||
-      !matchId ||
-      !predGoalsHomeTeam ||
-      !predGoalsAwayTeam ||
-      predGoalsAwayTeam === "" ||
-      predGoalsAwayTeam === ""
-    ) {
-      return errorResMsg(res, 400, "Please provide everything");
-    }
-    const verifyMatchId = await Match.findOne({ matchId });
+    console.log(predGoalsHomeTeam, predGoalsAwayTeam, matchId);
+    // if (!matchId || !predGoalsHomeTeam || !predGoalsAwayTeam) {
+    //   return errorResMsg(res, 400, "Please provide everything");
+    // }
+    const verifyMatchId = await Match.findOne({ _id: matchId });
     if (!verifyMatchId) {
       return errorResMsg(res, 404, "Invalid match ID provided");
     }
@@ -40,7 +35,7 @@ router.post("/", isAuth, async (req, res) => {
       predGoalsHomeTeam,
       predGoalsAwayTeam,
       userId: id,
-      // scoreId,
+      week: weekNumber(verifyMatchId.matchDate),
       matchId,
     });
     const dataInfo = {

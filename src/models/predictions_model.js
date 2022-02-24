@@ -9,7 +9,6 @@ const predictionSchema = new mongoose.Schema(
     },
     matchId: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true,
       ref: "Match",
     },
     scoreId: {
@@ -24,6 +23,9 @@ const predictionSchema = new mongoose.Schema(
     predGoalsAwayTeam: {
       type: Number,
       required: [true, "Please enter a predefined goals away team"],
+    },
+    week: {
+      type: Number,
     },
   },
   { timestamps: true }
