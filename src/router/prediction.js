@@ -76,10 +76,18 @@ router.get("/points", isAuth, async (req, res) => {
     }
     {
       let i = weekNumber(new Date());
+      let d = new Date().getFullYear();
       for (i; i < 54; i++) {
-        const predictions = await Prediction.find({ userId: id, week: i });
+        const predictions = await Prediction.find({
+          userId: id,
+          week: i,
+          updatedAt: {
+            $gt: new Date(d - 1, 11, 31),
+            $lt: new Date(d + 1, 0, 1),
+          },
+        });
         const correctPred = [];
-        for (prediction of predictions) {
+        for (let prediction of predictions) {
           let match = await Match.findOne({ _id: prediction.matchId });
           let home = match.goalsHomeTeam == prediction.predGoalsHomeTeam;
           let away = match.goalsAwayTeam == prediction.predGoalsAwayTeam;
@@ -90,6 +98,20 @@ router.get("/points", isAuth, async (req, res) => {
         let totalPoint = correctPred.reduce((a, b) => {
           return a + b;
         }, 0);
+        let point = await Points.findOne({
+          userId: id,
+          week: i,
+        });
+        if (point) {
+          await Points.findOneAndUpdate(
+            {
+              userId: id,
+              week: i,
+            },
+            { points: totalPoint }
+          );
+          continue;
+        }
         await new Points({
           userId: id,
           week: i,
