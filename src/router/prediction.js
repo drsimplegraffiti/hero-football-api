@@ -31,10 +31,10 @@ router.post("/", isAuth, async (req, res) => {
     //   return errorResMsg(res, 409, "Match started already....");
     // }
 
-    const prediction = await Prediction.findOne({ matchId });
+    const prediction = await Prediction.findOne({ matchId, userId: id });
     if (prediction) {
       const updatedPrediction = await Prediction.findOneAndUpdate(
-        { matchId },
+        { matchId, userId: id },
         {
           predGoalsAwayTeam,
           predGoalsAwayTeam,
@@ -75,7 +75,7 @@ router.get("/points", isAuth, async (req, res) => {
       return errorResMsg(res, 401, "Unauthorized access");
     }
     {
-      let i = weekNumber(new Date());
+      let i = 1; //weekNumber(new Date());
       let d = new Date().getFullYear();
       for (i; i < 54; i++) {
         const predictions = await Prediction.find({
@@ -119,7 +119,7 @@ router.get("/points", isAuth, async (req, res) => {
         }).save();
       }
     }
-    const points = await Points.find({ userId: id });
+    const points = await Points.find({ userId: id }).sort({ week: 1 });
     const dataInfo = {
       points,
     };
@@ -130,21 +130,22 @@ router.get("/points", isAuth, async (req, res) => {
   }
 });
 
-// Update prediction
-router.patch("/prediction/:predictionId", async (req, res, next) => {
-  const { predictionId } = req.params;
-  console.log("What is my predictionId?", predictionId);
+// Leader board
+router.get("/leaderboard", async (req, res) => {
   try {
-    const predictionToUpdate = await Prediction.findById(predictionId);
-    //Fetch prediction info from API await axios.get predictionId
-    if (!predictionToUpdate) {
-      res.status(404).send("Prediction not found");
-    } else {
-      const updatedPrediction = await predictionToUpdate.update(req.body);
-      res.json(updatedPrediction);
-    }
-  } catch (e) {
-    next(e);
+    let leaders = await Points.aggregate([
+      { $match: {} },
+      {
+        $group: {
+          _id: "$userId",
+          points: { $sum: "$points" },
+        },
+      },
+    ]).limit(100);
+    return successResMsg(res, 200, leaders);
+  } catch (error) {
+    console.log(error);
+    return errorResMsg(res, 500, "Server error");
   }
 });
 

@@ -2,7 +2,7 @@ const Match = require("../models/match_model");
 var axios = require("axios").default;
 const mongoose = require("mongoose");
 
-const startDate = `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`;
+const startDate = `${new Date().getFullYear()}-${new Date().getMonth()}-${15}`;
 const d = new Date(new Date().setDate(new Date().getDate() + 30));
 const endDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 

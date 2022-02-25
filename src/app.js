@@ -9,6 +9,7 @@ const matchRouter = require("./router/matches");
 const roundsRouter = require("./router/rounds");
 const predictionRouter = require("./router/prediction");
 const scoresRouter = require("./router/scores");
+const adminRouter = require("./router/admin");
 
 const matches = require("./API_request/matches");
 const rounds = require("./API_request/rounds");
@@ -36,6 +37,7 @@ app.use("/api/user", userRouter);
 app.use("/", matchRouter);
 app.use("/", roundsRouter);
 app.use("/api/v1/prediction", predictionRouter);
+app.use("/api/v1", adminRouter);
 app.use("/", scoresRouter);
 
 // @404 page
