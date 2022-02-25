@@ -4,6 +4,7 @@ const Prediction = require("../models/predictions_model");
 const Reward = require("../models/reward_model");
 const router = new Router();
 const { errorResMsg, successResMsg } = require("../utils/response");
+const { isAdminAuth } = require("../middleware/auth");
 
 router.post("/register", async (req, res) => {
   try {
@@ -21,17 +22,9 @@ router.post("/register", async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
-      location,
       number,
-      isVerified,
     });
-    const createdUser = await user.save();
-    await sendEmail({
-      email: user.email,
-      subject: "User registration ",
-      message: `${URL}/auth/email/verify/token=${user.emailToken}`,
-    });
-    console.log(user.email);
+    const createdUser = await admin.save();
     const dataInfo = {
       message: "Verification link sent Successfully",
     };
@@ -41,8 +34,13 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.get("/overview", async (req, res) => {
+router.get("/overview", isAdminAuth, async (req, res) => {
   try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
     let leaderBoard = 100;
     let users = await User.countDocuments();
     let [activeUsers] = await Prediction.aggregate([
@@ -75,8 +73,13 @@ router.get("/overview", async (req, res) => {
 });
 
 //get all users --->admin
-router.get("/users", async (req, res) => {
+router.get("/users", isAdminAuth, async (req, res) => {
   try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
     const users = await User.find();
     successResMsg(res, 200, users);
   } catch (error) {
@@ -86,8 +89,13 @@ router.get("/users", async (req, res) => {
 });
 
 // Get active users
-router.get("/active/users", async (req, res) => {
+router.get("/active/users", isAdminAuth, async (req, res) => {
   try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
     let activeUsers = await Prediction.aggregate([
       { $match: {} },
       { $group: { _id: "$userId" } },
@@ -123,8 +131,13 @@ router.get("/active/users", async (req, res) => {
   }
 });
 
-router.get("/winners", async (req, res) => {
+router.get("/winners", isAdminAuth, async (req, res) => {
   try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
     let winners = await Reward.aggregate([
       { $match: {} },
       { $group: { _id: "$userId" } },

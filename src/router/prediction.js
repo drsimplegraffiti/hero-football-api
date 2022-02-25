@@ -27,9 +27,9 @@ router.post("/", isAuth, async (req, res) => {
       return errorResMsg(res, 404, "Invalid match ID provided");
     }
 
-    // if (verifyMatchId.matchDate < new Date()) {
-    //   return errorResMsg(res, 409, "Match started already....");
-    // }
+    if (verifyMatchId.matchDate < new Date()) {
+      return errorResMsg(res, 409, "Match started already....");
+    }
 
     const prediction = await Prediction.findOne({ matchId, userId: id });
     if (prediction) {
