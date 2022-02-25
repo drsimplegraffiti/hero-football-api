@@ -217,4 +217,32 @@ router.get("/winners", isAdminAuth, async (req, res) => {
     return errorResMsg(res, 500, "Something went wrong");
   }
 });
+
+// Create reward
+router.post("/rewards", isAdminAuth, async (req, res) => {
+  try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
+    const { userId, reward } = req.body;
+
+    if (userId === "" || reward === "") {
+      return errorResMsg(res, 400, "Bad request");
+    }
+    const rewards = new Reward({
+      userId,
+      reward,
+    });
+    const dataInfo = {
+      userId,
+      reward,
+    };
+    return successResMsg(res, 201, dataInfo);
+  } catch (error) {
+    console.log(error);
+    return errorResMsg(res, 500, "Something went wrong");
+  }
+});
 module.exports = router;
