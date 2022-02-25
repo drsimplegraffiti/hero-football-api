@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { User } = require("../models/user_model");
 const { Admin } = require("../models/admin_model");
 const Prediction = require("../models/predictions_model");
+const { Points } = require("../models/points_model");
 const Reward = require("../models/reward_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -246,4 +247,52 @@ router.post("/rewards", isAdminAuth, async (req, res) => {
   }
 });
 
+// Leader board
+router.get("/leaderboard", isAdminAuth, async (req, res) => {
+  try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
+    let leaders = await Points.aggregate([
+      { $match: {} },
+      {
+        $group: {
+          _id: "$userId",
+          points: { $sum: "$points" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ $arrayElemAt: ["$user", 0] }, "$$ROOT"],
+          },
+        },
+      },
+      {
+        $project: {
+          email: 1,
+          fullName: 1,
+          points: 1, // 1 means show it
+        },
+      },
+    ]).limit(100);
+    const dataInfo = {
+      leaders,
+    };
+    return successResMsg(res, 200, dataInfo);
+  } catch (error) {
+    console.log(error);
+    return errorResMsg(res, 500, "Server error");
+  }
+});
 module.exports = router;
