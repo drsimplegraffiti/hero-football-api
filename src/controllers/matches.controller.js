@@ -26,4 +26,17 @@ const onGoingMatches = async (req, res) => {
     errorResMsg(res, 500, "Server Error");
   }
 };
-module.exports = { getAllMatches, onGoingMatches };
+
+const singleMatch = async (req, res) => {
+  try {
+    const getSingleMatch = await Matches.findById(req.params.id);
+    const dataInfo = {
+      getSingleMatch,
+    };
+    return successResMsg(res, 200, dataInfo);
+  } catch (error) {
+    console.log(error);
+    errorResMsg(res, 500, "Server Error");
+  }
+};
+module.exports = { getAllMatches, onGoingMatches, singleMatch };

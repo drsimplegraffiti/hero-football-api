@@ -7,12 +7,15 @@ const { isAuth } = require("../middleware/auth");
 const {
   getAllMatches,
   onGoingMatches,
+  singleMatch,
 } = require("../controllers/matches.controller");
 const router = new Router();
 
 router.get("/matches", getAllMatches);
 
 router.get("/ongoing", onGoingMatches);
+
+router.get("/match/:id", singleMatch);
 
 // // GET all matches with predictions for one round
 // router.get("/user/:userId/round/:roundNr", async (req, res, next) => {
