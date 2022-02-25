@@ -127,7 +127,10 @@ router.get("/users", isAdminAuth, async (req, res) => {
       return errorResMsg(res, 401, "Unauthorized access");
     }
     const users = await User.find();
-    successResMsg(res, 200, users);
+    const dataInfo = {
+      users,
+    };
+    successResMsg(res, 200, dataInfo);
   } catch (error) {
     console.log(error);
     return errorResMsg(res, 500, "Something went wrong");
