@@ -30,7 +30,7 @@ router.post("/", isAuth, async (req, res) => {
 
     if (
       verifyMatchId.matchDate <
-      new Date(new Date().setDate(new Date().getHours() - 1))
+      new Date(new Date().setHours(new Date().getHours() - 0))
     ) {
       return errorResMsg(res, 409, "Match started already....");
     }
