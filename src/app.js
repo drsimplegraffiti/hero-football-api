@@ -37,7 +37,7 @@ app.use("/api/user", userRouter);
 app.use("/", matchRouter);
 app.use("/", roundsRouter);
 app.use("/api/v1/prediction", predictionRouter);
-app.use("/api/v1", adminRouter);
+app.use("/api/v1/admin", adminRouter);
 app.use("/", scoresRouter);
 
 // @404 page

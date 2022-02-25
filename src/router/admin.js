@@ -1,14 +1,17 @@
 const { Router } = require("express");
 const { User } = require("../models/user_model");
+const { Admin } = require("../models/admin_model");
 const Prediction = require("../models/predictions_model");
 const Reward = require("../models/reward_model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const router = new Router();
 const { errorResMsg, successResMsg } = require("../utils/response");
 const { isAdminAuth } = require("../middleware/auth");
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, fullName } = req.body;
+    const { email, password, fullName, number } = req.body;
 
     const existingUser = await Admin.findOne({
       email: email,
@@ -30,6 +33,48 @@ router.post("/register", async (req, res) => {
     };
     return successResMsg(res, 200, dataInfo);
   } catch (error) {
+    console.log(error);
+    return errorResMsg(res, 500, "something went wrong");
+  }
+});
+
+//admin login
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email });
+    if (!admin || admin === null) {
+      return errorResMsg(res, 400, "this email does not exist");
+    }
+
+    const confirmPassword = await bcrypt.compare(password, admin.password);
+    if (!confirmPassword) {
+      return res.status(400).json({
+        status: "error",
+        message: "User password is incorrect",
+      });
+    }
+    //create token
+    const token = await jwt.sign(
+      {
+        id: admin._id,
+        email: admin.email,
+        fullName: admin.fullName,
+      },
+      process.env.SECRET,
+      {
+        expiresIn: "2d",
+      }
+    );
+    console.log(token);
+    const dataInfo = {
+      message: "Admin Login Successful",
+      token: token,
+      userId: admin._id,
+    };
+    return successResMsg(res, 200, dataInfo);
+  } catch (error) {
+    console.log(error);
     return errorResMsg(res, 500, "Something went wrong");
   }
 });

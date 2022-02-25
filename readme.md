@@ -50,3 +50,4 @@ Country ID = 108
 competition_id=78
 
 sportmonktoken=3mzdscZwroTW6w8W43xpOpqnzCBdwKdpTHhrIKiXFYpYBDS3lNyGhpkE1Fho
+heroku config:set APIkey=ed2a9573227f81ca3da6755c16c77e093e37d5dc671ec360aef0e2a92734312b
