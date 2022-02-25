@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user_model");
 const dotenv = require("dotenv");
 dotenv.config();
-const { SECRET } = process.env;
+const { ADMIN_SECRET, USER_SECRET } = process.env;
 const { successResMsg, errorResMsg } = require("../utils/response");
 
 exports.isAuth = async (req, res, next) => {
@@ -11,7 +11,7 @@ exports.isAuth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return errorResMsg(res, 401, "Token Is missing");
 
-    const decoded = await jwt.verify(token, SECRET);
+    const decoded = await jwt.verify(token, USER_SECRET);
     if (!decoded) {
       throw new Error();
     }
@@ -31,7 +31,7 @@ exports.isAdminAuth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return errorResMsg(res, 401, "Token Is missing");
 
-    const decoded = await jwt.verify(token, SECRET);
+    const decoded = await jwt.verify(token, ADMIN_SECRET);
     if (!decoded) {
       throw new Error();
     }

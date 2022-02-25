@@ -88,6 +88,7 @@ module.exports.signUp = async (req, res) => {
     console.log(user.email);
     const dataInfo = {
       message: "Verification link sent Successfully",
+      userId: user._id,
     };
     return successResMsg(res, 200, dataInfo);
   } catch (error) {
@@ -128,7 +129,7 @@ module.exports.Login = async (req, res) => {
         email: user.email,
         fullName: user.fullName,
       },
-      process.env.SECRET,
+      process.env.USER_SECRET,
       {
         expiresIn: "2d",
       }

@@ -4,7 +4,7 @@ const { Admin } = require("../models/admin_model");
 const Prediction = require("../models/predictions_model");
 const { Points } = require("../models/points_model");
 const Reward = require("../models/reward_model");
-const { SECRET } = process.env;
+const { ADMIN_SECRET } = process.env;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const router = new Router();
@@ -36,7 +36,7 @@ router.post("/register", async (req, res) => {
         id: createdAdmin._id,
         email: createdAdmin.email,
       },
-      SECRET,
+      ADMIN_SECRET,
       {
         expiresIn: "2h",
       }
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
 
     const dataInfo = {
       message: "Verification link sent Successfully",
-      createdAdmin,
+      creadtedAdmin: createdAdmin._id,
       token,
     };
     return successResMsg(res, 200, dataInfo);
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
         email: admin.email,
         fullName: admin.fullName,
       },
-      process.env.SECRET,
+      process.env.ADMIN_SECRET,
       {
         expiresIn: "2d",
       }
