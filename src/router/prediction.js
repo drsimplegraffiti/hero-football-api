@@ -141,8 +141,33 @@ router.get("/leaderboard", async (req, res) => {
           points: { $sum: "$points" },
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ $arrayElemAt: ["$user", 0] }, "$$ROOT"],
+          },
+        },
+      },
+      {
+        $project: {
+          email: 1,
+          fullName: 1,
+          points: 1, // 1 means show it
+        },
+      },
     ]).limit(100);
-    return successResMsg(res, 200, leaders);
+    const dataInfo = {
+      leaders,
+    };
+    return successResMsg(res, 200, dataInfo);
   } catch (error) {
     console.log(error);
     return errorResMsg(res, 500, "Server error");
