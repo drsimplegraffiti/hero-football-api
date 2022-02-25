@@ -245,4 +245,5 @@ router.post("/rewards", isAdminAuth, async (req, res) => {
     return errorResMsg(res, 500, "Something went wrong");
   }
 });
+
 module.exports = router;

@@ -11,4 +11,19 @@ const getAllMatches = async (req, res) => {
   }
 };
 
-module.exports = getAllMatches;
+const onGoingMatches = async (req, res) => {
+  try {
+    const getMatches = await Matches.find({});
+    let onMatches = getMatches.filter(
+      (match) => match.matchDate < new Date() && match.duration < 120
+    );
+    const dataInfo = {
+      onMatches,
+    };
+    return successResMsg(res, 200, dataInfo);
+  } catch (error) {
+    console.log(error);
+    errorResMsg(res, 500, "Server Error");
+  }
+};
+module.exports = { getAllMatches, onGoingMatches };

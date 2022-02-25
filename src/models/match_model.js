@@ -12,6 +12,9 @@ const matchSchema = new mongoose.Schema({
     type: Number,
     // required: true,
   },
+  duration: {
+    type: Number,
+  },
   homeTeamName: {
     type: String,
     // required: true,

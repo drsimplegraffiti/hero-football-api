@@ -35,6 +35,13 @@ const getMatches = async () => {
         awayTeamName: fixture.match_awayteam_name,
         goalsAwayTeam: fixture.match_awayteam_score,
         matchDate: `${fixture.match_date}T${fixture.match_time}Z`, // ensure UTC format
+        duration: (
+          (new Date().getTime() -
+            new Date(
+              `${fixture.match_date}T${fixture.match_time}Z`
+            ).getTime()) /
+          60000
+        ).toFixed(0),
         country: fixture.country_name,
         isLiveStatus: fixture.match_live,
         leagueId: fixture.league_id,

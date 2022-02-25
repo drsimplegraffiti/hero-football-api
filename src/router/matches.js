@@ -4,10 +4,15 @@ const Prediction = require("../models/predictions_model");
 const User = require("../models/user_model");
 const Score = require("../models/score_model");
 const { isAuth } = require("../middleware/auth");
-const getMatches = require("../controllers/matches.controller");
+const {
+  getAllMatches,
+  onGoingMatches,
+} = require("../controllers/matches.controller");
 const router = new Router();
 
-router.get("/matches", getMatches);
+router.get("/matches", getAllMatches);
+
+router.get("/ongoing", onGoingMatches);
 
 // // GET all matches with predictions for one round
 // router.get("/user/:userId/round/:roundNr", async (req, res, next) => {
