@@ -6,6 +6,7 @@ const { Points } = require("../models/points_model");
 const { errorResMsg, successResMsg } = require("../utils/response");
 const { isAuth } = require("../middleware/auth");
 const { weekNumber } = require("weeknumber");
+const sendEmail = require("../utils/emailSender");
 
 const router = new Router();
 
@@ -94,6 +95,15 @@ router.get("/points", isAuth, async (req, res) => {
           if (home && away) {
             correctPred.push(3);
           }
+          await sendEmail({
+            email: req.user.email,
+            subject: "Congratulations",
+            message: `
+            
+            <h4>Congratulations</h4>
+            <p>Your predictions were right and you would be rewarded with a live match ticket. Check your mail for more details</p>
+            `,
+          });
         }
         let totalPoint = correctPred.reduce((a, b) => {
           return a + b;
