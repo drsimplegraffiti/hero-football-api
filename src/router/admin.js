@@ -4,6 +4,7 @@ const { Admin } = require("../models/admin_model");
 const Prediction = require("../models/predictions_model");
 const { Points } = require("../models/points_model");
 const Reward = require("../models/reward_model");
+const { SECRET } = process.env;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const router = new Router();
@@ -12,12 +13,12 @@ const { isAdminAuth } = require("../middleware/auth");
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, fullName, number } = req.body;
+    const { email, password, fullName, number, role } = req.body;
 
-    const existingUser = await Admin.findOne({
+    const existingAdmin = await Admin.findOne({
       email: email,
     });
-    if (existingUser) return errorResMsg(res, 400, "Admin already registered");
+    if (existingAdmin) return errorResMsg(res, 400, "Admin already registered");
 
     const saltPassword = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, saltPassword);
@@ -27,10 +28,24 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
       number,
+      role,
     });
-    const createdUser = await admin.save();
+    const createdAdmin = await admin.save();
+    const token = await jwt.sign(
+      {
+        id: createdAdmin._id,
+        email: createdAdmin.email,
+      },
+      SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
+
     const dataInfo = {
       message: "Verification link sent Successfully",
+      createdAdmin,
+      token,
     };
     return successResMsg(res, 200, dataInfo);
   } catch (error) {
@@ -47,7 +62,9 @@ router.post("/login", async (req, res) => {
     if (!admin || admin === null) {
       return errorResMsg(res, 400, "this email does not exist");
     }
-
+    if (admin.role !== "Admin") {
+      return errorResMsg(res, 401, "Unauthorized");
+    }
     const confirmPassword = await bcrypt.compare(password, admin.password);
     if (!confirmPassword) {
       return res.status(400).json({
@@ -68,6 +85,8 @@ router.post("/login", async (req, res) => {
       }
     );
     console.log(token);
+    res.cookie("access-token", token);
+
     const dataInfo = {
       message: "Admin Login Successful",
       token: token,
@@ -82,7 +101,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/overview", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");
@@ -121,7 +140,7 @@ router.get("/overview", isAdminAuth, async (req, res) => {
 //get all users --->admin
 router.get("/users", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");
@@ -140,7 +159,7 @@ router.get("/users", isAdminAuth, async (req, res) => {
 // Get active users
 router.get("/active/users", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");
@@ -182,7 +201,7 @@ router.get("/active/users", isAdminAuth, async (req, res) => {
 
 router.get("/winners", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");
@@ -225,7 +244,7 @@ router.get("/winners", isAdminAuth, async (req, res) => {
 // Create reward
 router.post("/rewards", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");
@@ -253,7 +272,7 @@ router.post("/rewards", isAdminAuth, async (req, res) => {
 // Leader board
 router.get("/leaderboard", isAdminAuth, async (req, res) => {
   try {
-    const id = req.user.id;
+    const id = req.admin.id;
     //check user
     if (!id) {
       return errorResMsg(res, 401, "Unauthorized access");

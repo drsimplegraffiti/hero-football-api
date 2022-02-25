@@ -28,7 +28,6 @@ exports.isAuth = async (req, res, next) => {
 
 exports.isAdminAuth = async (req, res, next) => {
   try {
-    // console.log(req.headers.authorization);
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return errorResMsg(res, 401, "Token Is missing");
 
@@ -36,13 +35,13 @@ exports.isAdminAuth = async (req, res, next) => {
     if (!decoded) {
       throw new Error();
     }
-    req.user = decoded;
-    console.log("===req.user");
-    console.log(req.user);
-    console.log("===req.user");
+    req.admin = decoded;
+    console.log("===req.admin");
+    console.log(req.admin);
+    console.log("===req.admin");
 
     next();
   } catch (e) {
-    return errorResMsg(res, 401, "signUp as user || Token expired ");
+    return errorResMsg(res, 401, "signUp as Admin || Token expired ");
   }
 };
