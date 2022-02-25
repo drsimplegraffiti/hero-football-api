@@ -49,7 +49,41 @@ module.exports.signUp = async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: "User registration ",
-      message: `${URL}/auth/email/verify/token=${user.emailToken}`,
+      // message: `${URL}/auth/email/verify/token=${user.emailToken}`,
+      message: `
+      <div style="background-color: #eeeeee;">
+      <div style="max-width: 700px; height: 250px; margin: auto;">
+        <img
+          style="width: 100%; height: 100%; object-fit: cover;"
+          src="https://res.cloudinary.com/ogeobubu/image/upload/v1645817302/koybnukvdsgso9wqord1.jpg"
+          alt="hero"
+        />
+      </div>
+      <div
+        style="
+          max-width: 600px;
+          margin: auto;
+          padding: 30px 20px;
+          font-size: 110%;
+        "
+      >
+        <p><strong>Dear</strong> User,</p>
+        <p>
+          Click <a href=${URL}/auth/email/verify/token=${user.emailToken}>here</a> to verify your League of Heroes
+          Account.<br />
+          <br />
+          Cheers,
+        </p>
+      </div>
+
+      <div style="max-width: 700px; height: 250px; margin: auto;">
+        <img
+          style="width: 100%; height: 100%; object-fit: cover;"
+          src="https://res.cloudinary.com/ogeobubu/image/upload/v1645818137/sgcjpibpk1pvaoxma6gg.jpg"
+          alt="hero"
+        />
+      </div>
+    </div>`,
     });
     console.log(user.email);
     const dataInfo = {
