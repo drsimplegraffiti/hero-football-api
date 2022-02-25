@@ -28,7 +28,10 @@ router.post("/", isAuth, async (req, res) => {
       return errorResMsg(res, 404, "Invalid match ID provided");
     }
 
-    if (verifyMatchId.matchDate < new Date()) {
+    if (
+      verifyMatchId.matchDate <
+      new Date(new Date().setDate(new Date().getHours() - 1))
+    ) {
       return errorResMsg(res, 409, "Match started already....");
     }
 
