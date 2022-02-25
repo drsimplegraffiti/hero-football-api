@@ -76,7 +76,7 @@ module.exports.signUp = async (req, res) => {
         </p>
       </div>
 
-      <div style="max-width: 700px; height: 250px; margin: auto;">
+      <div style="max-width: 700px; height: 200px; margin: auto;">
         <img
           style="width: 100%; height: 100%; object-fit: cover;"
           src="https://res.cloudinary.com/ogeobubu/image/upload/v1645818137/sgcjpibpk1pvaoxma6gg.jpg"
