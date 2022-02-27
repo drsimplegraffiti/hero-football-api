@@ -70,6 +70,55 @@ router.post("/", isAuth, async (req, res) => {
   }
 });
 
+//edit prediction
+router.put("/edit", isAuth, async (req, res) => {
+  try {
+    const id = req.user.id;
+    //check user
+    if (!id) {
+      return errorResMsg(res, 401, "Unauthorized access");
+    }
+    const { predGoalsHomeTeam, predGoalsAwayTeam, scoreId, matchId } = req.body;
+
+    const verifyMatchId = await Match.findOne({ _id: matchId });
+    if (!verifyMatchId) {
+      return errorResMsg(res, 404, "Invalid match ID provided");
+    }
+
+    if (
+      verifyMatchId.matchDate <
+      new Date(new Date().setHours(new Date().getHours() - 0))
+    ) {
+      return errorResMsg(res, 409, "Match started already....");
+    }
+
+    const prediction = await Prediction.findOneAndUpdate({
+      matchId,
+      userId: id,
+    });
+    if (prediction) {
+      const updatedPrediction = await Prediction.findOneAndUpdate(
+        { matchId, userId: id },
+        {
+          predGoalsAwayTeam,
+          predGoalsAwayTeam,
+        },
+        {
+          new: true,
+        }
+      );
+
+      const dataInfo = {
+        prediction: updatedPrediction,
+      };
+      return successResMsg(res, 200, dataInfo);
+    }
+  } catch (error) {
+    console.log(error);
+    errorResMsg(res, 500, "Something went wrong");
+  }
+});
+
 // Get all prediction points
 router.get("/points", isAuth, async (req, res) => {
   try {
@@ -132,7 +181,8 @@ router.get("/points", isAuth, async (req, res) => {
         }).save();
       }
     }
-    const points = await Points.find({ userId: id }).sort({ week: 1 });
+    // const points = await Points.find({ userId: id }).sort({ week: 1 });
+    const points = await Points.find({ userId: id }).sort({ points: 1 });
     const dataInfo = {
       points,
     };

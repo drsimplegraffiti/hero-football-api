@@ -43,7 +43,7 @@ router.post("/register", async (req, res) => {
     );
 
     const dataInfo = {
-      message: "Verification link sent Successfully",
+      message: "Registration Successful",
       creadtedAdmin: createdAdmin._id,
       token,
     };
@@ -307,7 +307,9 @@ router.get("/leaderboard", isAdminAuth, async (req, res) => {
           points: 1, // 1 means show it
         },
       },
-    ]).limit(100);
+    ])
+      .limit(100)
+      .sort({ points: 1 }); //mark
     const dataInfo = {
       leaders,
     };
