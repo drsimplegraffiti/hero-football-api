@@ -226,7 +226,9 @@ router.get("/leaderboard", async (req, res) => {
           points: 1, // 1 means show it
         },
       },
-    ]).limit(100);
+    ])
+      .limit(100)
+      .sort({ points: 1 });
     const dataInfo = {
       leaders,
     };

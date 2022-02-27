@@ -7,7 +7,7 @@ const userSchema = new Schema(
   {
     fullName: {
       type: String,
-      // required: [true, "Please enter your name..."],
+      index: true,
     },
     email: {
       type: String,

@@ -5,12 +5,10 @@ const fs = require("fs");
 
 const sendEmail = async (options, attachment = false) => {
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: true,
+    service: "gmail",
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
+      user: process.env.USER_EMAIL,
+      pass: process.env.USER_EMAIL_PASSWORD,
     },
     tls: {
       rejectUnauthorized: false,
@@ -18,7 +16,7 @@ const sendEmail = async (options, attachment = false) => {
   });
   try {
     const message = {
-      from: process.env.EMAIL,
+      from: process.env.USER_EMAIL,
       to: options.email,
       subject: options.subject,
       text: options.message,
