@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const jwt = require("jsonwebtoken");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 const validator = require("validator");
 
 const userSchema = new Schema(
@@ -37,8 +38,13 @@ const userSchema = new Schema(
     number: {
       type: String,
     },
+    userIndex: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
-
+userSchema.plugin(AutoIncrement, {
+  inc_field: "userIndex",
+});
 module.exports.User = mongoose.model("User", userSchema);

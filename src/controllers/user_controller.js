@@ -25,6 +25,7 @@ module.exports.signUp = async (req, res) => {
       fullName,
       emailToken,
       isVerified,
+      userIndex,
     } = req.body;
 
     const existingUser = await User.findOne({
@@ -44,6 +45,7 @@ module.exports.signUp = async (req, res) => {
       ageRange,
       number,
       isVerified,
+      userIndex,
     });
     const createdUser = await user.save();
     await sendEmail({

@@ -1,6 +1,6 @@
 // Require mongoose
 const mongoose = require("mongoose");
-
+const AutoIncrementFactory = require("mongoose-sequence");
 //Require dotenv file
 require("dotenv").config();
 const { MONGO_URL_LOCAL } = process.env;
@@ -20,5 +20,5 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
+const AutoIncrement = AutoIncrementFactory(connectDB);
 module.exports = connectDB;
