@@ -12,8 +12,9 @@ const pointSchema = new Schema(
     points: {
       type: Number,
     },
-    week: {
-      type: Number,
+    matchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Match",
     },
     matchDate: {
       type: Date,

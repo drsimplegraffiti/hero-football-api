@@ -17,8 +17,13 @@ const onGoingMatches = async (req, res) => {
     let onMatches = getMatches.filter(
       (match) => match.matchDate < new Date() && match.duration < 120
     );
+
+    let matchesNotStartedYet = getMatches.filter(
+      (match) => match.matchDate > new Date()
+    );
     const dataInfo = {
       onMatches,
+      matchesNotStartedYet,
     };
     return successResMsg(res, 200, dataInfo);
   } catch (error) {

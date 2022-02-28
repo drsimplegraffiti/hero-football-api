@@ -120,6 +120,8 @@ router.put("/edit", isAuth, async (req, res) => {
 });
 
 // Get all prediction points
+
+// Get all prediction points
 router.get("/points", isAuth, async (req, res) => {
   try {
     const id = req.user.id;
@@ -130,59 +132,70 @@ router.get("/points", isAuth, async (req, res) => {
     {
       let i = 1; //weekNumber(new Date());
       let d = new Date().getFullYear();
-      for (i; i < 54; i++) {
-        const predictions = await Prediction.find({
-          userId: id,
-          matchDate: i,
-          updatedAt: {
-            $gt: new Date(d - 1, 11, 31),
-            $lt: new Date(d + 1, 0, 1),
-          },
-        });
-        const correctPred = [];
-        for (let prediction of predictions) {
-          let match = await Match.findOne({ _id: prediction.matchId });
-          let home = match.goalsHomeTeam == prediction.predGoalsHomeTeam;
-          let away = match.goalsAwayTeam == prediction.predGoalsAwayTeam;
-          if (home && away) {
-            correctPred.push(3);
+      const predictions = await Prediction.find({
+        userId: id,
+        updatedAt: {
+          $gt: new Date(d - 1, 11, 31),
+          $lt: new Date(d + 1, 0, 1),
+        },
+      });
+      const correctPred = [];
+      for (let prediction of predictions) {
+        let match = await Match.findOne({ _id: prediction.matchId });
+        let home = match.goalsHomeTeam == prediction.predGoalsHomeTeam;
+        let away = match.goalsAwayTeam == prediction.predGoalsAwayTeam;
+        if (home && away) {
+          let point = await Points.findOne({
+            userId: id,
+            matchId: prediction.matchId,
+          });
+
+          if (point) {
+            await Points.findOneAndUpdate(
+              {
+                userId: id,
+                matchId: prediction.matchId,
+              },
+              { points: 3 }
+            );
+            await sendEmail({
+              email: req.user.email,
+              subject: "Congratulations",
+              message: `
+  
+            <h4>Congratulations</h4>
+            <p>Your predictions were right and you would be rewarded with a live match ticket. Check your mail for more details</p>
+            `,
+            });
+            continue;
           }
+          await new Points({
+            userId: id,
+            matchId: prediction.matchId,
+            points: 3,
+            matchDate: prediction.matchDate,
+          }).save();
           await sendEmail({
             email: req.user.email,
             subject: "Congratulations",
             message: `
-            
-            <h4>Congratulations</h4>
-            <p>Your predictions were right and you would be rewarded with a live match ticket. Check your mail for more details</p>
-            `,
+
+          <h4>Congratulations</h4>
+          <p>Your predictions were right and you would be rewarded with a live match ticket. Check your mail for more details</p>
+          `,
           });
         }
-        let totalPoint = correctPred.reduce((a, b) => {
-          return a + b;
-        }, 0);
-        let point = await Points.findOne({
-          userId: id,
-          matchDate: i,
-        });
-        if (point) {
-          await Points.findOneAndUpdate(
-            {
-              userId: id,
-              matchDate: i,
-            },
-            { points: totalPoint }
-          );
-          continue;
-        }
-        await new Points({
-          userId: id,
-          matchDate: i,
-          points: totalPoint,
-        }).save();
       }
     }
     // const points = await Points.find({ userId: id }).sort({ week: 1 });
-    const points = await Points.find({ userId: id }).sort({ points: 1 });
+    let d = new Date().getFullYear();
+    const points = await Points.find({
+      userId: id,
+      updatedAt: {
+        $gt: new Date(d - 1, 11, 31),
+        $lt: new Date(d + 1, 0, 1),
+      },
+    }).sort({ points: 1 });
     const dataInfo = {
       points,
     };
@@ -196,8 +209,16 @@ router.get("/points", isAuth, async (req, res) => {
 // Leader board
 router.get("/leaderboard", async (req, res) => {
   try {
+    let d = new Date().getFullYear();
     let leaders = await Points.aggregate([
-      { $match: {} },
+      {
+        $match: {
+          updatedAt: {
+            $gt: new Date(d - 1, 11, 31),
+            $lt: new Date(d + 1, 0, 1),
+          },
+        },
+      },
       {
         $group: {
           _id: "$userId",
