@@ -230,10 +230,10 @@ router.get("/leaderboard", async (req, res) => {
     ])
       .limit(100)
       .sort({ points: 1 });
-    const dataInfo = {
-      leaders,
-    };
-    return successResMsg(res, 200, dataInfo);
+    // const dataInfo = {
+    //   leaders,
+    // };
+    return successResMsg(res, 200, leaders);
   } catch (error) {
     console.log(error);
     return errorResMsg(res, 500, "Server error");

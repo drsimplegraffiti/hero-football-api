@@ -186,6 +186,7 @@ router.get("/active/users", isAdminAuth, async (req, res) => {
         $project: {
           email: 1,
           fullName: 1,
+          userIndex: 1,
         },
       },
     ]);
