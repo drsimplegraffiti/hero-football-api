@@ -133,7 +133,7 @@ router.get("/points", isAuth, async (req, res) => {
       for (i; i < 54; i++) {
         const predictions = await Prediction.find({
           userId: id,
-          week: i,
+          matchDate: i,
           updatedAt: {
             $gt: new Date(d - 1, 11, 31),
             $lt: new Date(d + 1, 0, 1),
@@ -162,13 +162,13 @@ router.get("/points", isAuth, async (req, res) => {
         }, 0);
         let point = await Points.findOne({
           userId: id,
-          week: i,
+          matchDate: i,
         });
         if (point) {
           await Points.findOneAndUpdate(
             {
               userId: id,
-              week: i,
+              matchDate: i,
             },
             { points: totalPoint }
           );
@@ -176,7 +176,7 @@ router.get("/points", isAuth, async (req, res) => {
         }
         await new Points({
           userId: id,
-          week: i,
+          matchDate: i,
           points: totalPoint,
         }).save();
       }
@@ -224,6 +224,7 @@ router.get("/leaderboard", async (req, res) => {
           email: 1,
           fullName: 1,
           points: 1, // 1 means show it
+          userIndex: 1,
         },
       },
     ])

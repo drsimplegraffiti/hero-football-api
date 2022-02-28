@@ -9,11 +9,19 @@ const pointSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // userIndex: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    // },
+
     points: {
       type: Number,
     },
     week: {
       type: Number,
+    },
+    matchDate: {
+      type: Date,
     },
   },
   { timestamps: true }

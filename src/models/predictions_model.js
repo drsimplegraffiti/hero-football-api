@@ -11,9 +11,9 @@ const predictionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Match",
     },
-    // matchDate: {
-    //   type: Date,
-    // },
+    matchDate: {
+      type: Date,
+    },
     scoreId: {
       type: mongoose.Schema.Types.ObjectId,
       // required: true,
