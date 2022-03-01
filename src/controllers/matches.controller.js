@@ -14,9 +14,13 @@ const getAllMatches = async (req, res) => {
 const onGoingMatches = async (req, res) => {
   try {
     const getMatches = await Matches.find({});
-    let onMatches = getMatches.filter(
-      (match) => match.matchDate < new Date() && match.duration < 120
+    // let onMatches = getMatches.filter(
+    //   (match) => match.matchDate < new Date() && match.duration < 120
+    // );
+    let onMatches = await getMatches.filter(
+      (match) => match.isLiveStatus === "1" // if i change the live status to 0
     );
+    console.log(onMatches);
 
     let matchesNotStartedYet = getMatches.filter(
       (match) => match.matchDate > new Date()

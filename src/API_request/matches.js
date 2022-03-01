@@ -9,17 +9,17 @@ const endDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 const baseUrl =
   // "https://apiv3.apifootball.com/?action=get_countries&APIkey="; // country
   // "https://apiv3.apifootball.com/?action=get_leagues&country_id=85&APIkey="; // country id =85, league_id = 248;
-  `https://apiv3.apifootball.com/?action=get_events&from=2022-03-1&to=2022-03-02&league_id=219&APIkey=${process.env.apiKey}`;
+  `https://apiv3.apifootball.com/?action=get_events&from=${startDate}&to=${endDate}&league_id=248&APIkey=${process.env.APIkey}`;
 var options = {
   method: "GET",
   url: baseUrl,
 };
 
-const array = [""];
+const array = ["Abia Warriors", "Heartland", "Enyimba FC", "Enugu Rangers FC"];
 const getMatches = async () => {
   const fetchData = await axios.request(options);
   const response = await fetchData.data;
-  console.log(response);
+  // console.log(response);
   const fixtures = await response
     .filter(
       (fixture) =>
