@@ -18,4 +18,4 @@ router.get("/rewards", isAuth, async (req, res) => {
     return errorResMsg(res, 500, "Server error");
   }
 });
-module.export = router;
+module.exports = router;
